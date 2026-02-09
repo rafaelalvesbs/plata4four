@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Plata4Four</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+
+        /* Lado Esquerdo - Imagem e Logo */
+        .left-side {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(0, 35, 64, 0.85) 0%, rgba(0, 74, 173, 0.7) 100%), 
+                        url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=1470');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .logo-container { z-index: 10; text-align: center; }
+        .logo-container h1 {
+            color: white; 
+            font-size: clamp(2.5rem, 5vw, 4rem); 
+            font-weight: 800; 
+            text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            letter-spacing: -1px;
+        }
+        .logo-container p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Lado Direito - Formulário */
+        .right-side {
+            flex: 0.5;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: clamp(20px, 8vw, 60px);
+            color: #1a202c;
+            box-shadow: -15px 0 40px rgba(0,0,0,0.1);
+            z-index: 20;
+            overflow-y: auto;
+        }
+
+        .welcome-text { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            width: 100%; 
+            padding-top: 0; 
+        }
+        .welcome-text h2 {
+            font-size: clamp(1.8rem, 3vw, 2.2rem);
+            color: #003058;
+            margin-bottom: 12px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        .welcome-text p { 
+            font-size: 1rem; 
+            color: #64748b; 
+            margin-bottom: 10px;
+        }
+
+        .form-container {
+            display: grid;
+            grid-template-columns: 1fr; 
+            gap: 15px;
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        .input-group label {
+            display: block;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: 6px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            background: #f8fafc;
+            font-size: 1rem;
+            transition: 0.3s;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #004aad;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(0, 74, 173, 0.1);
+        }
+
+        .options-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 5px 0;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .lgpd-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .btn-acessar {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(90deg, #002340, #004aad);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0, 48, 88, 0.2);
+            transition: 0.3s;
+        }
+
+        .btn-acessar:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+        .toggle-auth {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #64748b;
+            cursor: pointer;
+        }
+        .toggle-auth b { color: #004aad; }
+
+        .registro-only { display: none; }
+
+        @media (max-width: 1024px) {
+            body {
+                background: linear-gradient(135deg, #002340 0%, #004aad 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                overflow-y: auto;
+            }
+
+            .left-side {
+                display: none;
+            }
+
+            .right-side {
+                flex: none;
+                width: 100%;
+                max-width: 400px;
+                background: white;
+                border-radius: 24px;
+                padding: 40px 24px;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                margin: 40px auto; /* Cria o espaço no topo e fundo da tela */
+                position: relative;
+            }
+
+            .form-container {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .right-side {
+                max-width: 95%;
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .welcome-text h2 {
+                font-size: 1.6rem;
+            }
+            .options-row { 
+                flex-direction: column; 
+                gap: 12px; 
+                align-items: flex-start; 
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="left-side">
+        <div class="logo-container">
+            <h1>Plata4Four</h1>
+            <p>Educação e Gestão de Futuro</p>
+        </div>
+    </div>
+
+    <div class="right-side">
+        <div class="welcome-text">
+            <h2 id="auth-title">Bem-vindo!</h2>
+            <p id="auth-desc">Acesse sua conta para continuar.</p>
+        </div>
+
+        <div class="form-container">
+            <div class="input-group registro-only" id="group-nome">
+                <label>Nome Completo</label>
+                <input type="text" id="nome" placeholder="Seu nome">
+            </div>
+
+            <div class="input-group" id="group-email">
+                <label>E-mail</label>
+                <input type="email" id="email" placeholder="seu@email.com">
+            </div>
+
+            <div class="input-group registro-only" id="group-perfil">
+                <label>Perfil</label>
+                <select id="perfil">
+                    <option value="" disabled selected>Selecione seu perfil</option>
+                    <option value="Diretor">Diretor</option>
+                    <option value="Coordenador">Coordenador</option>
+                    <option value="Professor">Professor</option>
+                    <option value="Aluno">Aluno</option>
+                    <option value="Pai ou Responsável">Pai ou Responsável</option>
+                </select>
+            </div>
+
+            <div class="input-group registro-only" id="group-codigo">
+                <label>Cód. Institucional / Turma</label>
+                <input type="text" id="codigo" placeholder="Código fornecido pelo professor">
+            </div>
+
+            <div class="input-group" id="group-senha">
+                <label>Senha</label>
+                <input type="password" id="password" placeholder="************">
+            </div>
+
+            <div class="options-row" id="group-options">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <input type="checkbox" style="accent-color: #004aad;"> Lembrar de mim
+                </label>
+                <a onclick="toggleRecuperar()" style="color: #004aad; text-decoration: none; font-weight: 600; cursor: pointer;">Esqueci a senha</a>
+            </div>
+
+            <div class="lgpd-row" id="group-lgpd" style="display: none;">
+                <input type="checkbox" id="lgpd-consent">
+                <label for="lgpd-consent">Concordo com os <a href="#">Termos</a> (LGPD).</label>
+            </div>
+
+            <button class="btn-acessar" onclick="executarAuth()" id="btn-auth">Entrar</button>
+
+            <div class="toggle-auth" onclick="toggleModo()" id="toggle-text">
+                Não possui uma conta? <b>Cadastre-se</b>
+            </div>
+        </div>
+    </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDhbzne_klt9ba1B_I04JXykvpslX2aD0k",
+        authDomain: "plata4form.firebaseapp.com",
+        projectId: "plata4form",
+        storageBucket: "plata4form.firebasestorage.app",
+        messagingSenderId: "833502821958",
+        appId: "1:833502821958:web:2d8899b12ca4bd97b01447"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let modo = 'login'; 
+
+    window.toggleModo = () => {
+        modo = (modo === 'login') ? 'registro' : 'login';
+        atualizarUI();
+    };
+
+    window.toggleRecuperar = () => {
+        modo = 'recuperar';
+        atualizarUI();
+    };
+
+    function atualizarUI() {
+        const registroFields = document.querySelectorAll('.registro-only');
+        const optionsRow = document.getElementById('group-options');
+        const groupSenha = document.getElementById('group-senha');
+        const title = document.getElementById('auth-title');
+        const btn = document.getElementById('btn-auth');
+        const toggle = document.getElementById('toggle-text');
+        const lgpdRow = document.getElementById('group-lgpd');
+
+        registroFields.forEach(f => f.style.display = 'none');
+        
+        if (modo === 'login') {
+            title.innerText = 'Bem-vindo!';
+            btn.innerText = 'Entrar';
+            optionsRow.style.display = 'flex';
+            groupSenha.style.display = 'block';
+            lgpdRow.style.display = 'none';
+            toggle.innerHTML = 'Não possui uma conta? <b>Cadastre-se</b>';
+        } else if (modo === 'registro') {
+            registroFields.forEach(f => f.style.display = 'block');
+            title.innerText = 'Crie sua Conta';
+            btn.innerText = 'Registrar';
+            optionsRow.style.display = 'none';
+            groupSenha.style.display = 'block';
+            lgpdRow.style.display = 'flex';
+            toggle.innerHTML = 'Já tem conta? <b>Faça Login</b>';
+        } else {
+            title.innerText = 'Recuperar Senha';
+            btn.innerText = 'Enviar Link';
+            optionsRow.style.display = 'none';
+            groupSenha.style.display = 'none';
+            lgpdRow.style.display = 'none';
+            toggle.innerHTML = 'Voltar ao <b>Login</b>';
+        }
+    }
+
+    window.executarAuth = async () => {
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('password').value;
+        const nome = document.getElementById('nome').value;
+        const perfil = document.getElementById('perfil').value;
+        const codigo = document.getElementById('codigo').value;
+        const lgpd = document.getElementById('lgpd-consent').checked;
+
+        if (!email) return alert("E-mail obrigatório.");
+
+        try {
+            if (modo === 'login') {
+                    const userCred = await signInWithEmailAndPassword(auth, email.trim(), pass);
+                    const docSnap = await getDoc(doc(db, "usuarios", userCred.user.uid));
+                    
+                    if (docSnap.exists()) {
+                        const dados = docSnap.data();
+                        
+                        if (dados.status !== 'aprovado') {
+                            await signOut(auth);
+                            return alert("Sua conta está em análise. Aguarde a aprovação do administrador.");
+                        }
+                        
+                        window.location.href = 'index.html';
+                    } else {
+                        alert("Perfil não encontrado.");
+                    }
+            } else if (modo === 'registro') {
+                if (!lgpd) return alert("Aceite os termos LGPD.");
+                if (!nome || !perfil) return alert("Preencha todos os campos.");
+
+                let statusInicial = 'pendente';
+                let idDocumentoExistente = null;
+
+                if (perfil === 'Aluno') {
+                    if (!codigo) return alert("Código da turma é obrigatório para alunos.");
+                    const qTurma = query(collection(db, "turmas"), where("senha", "==", codigo));
+                    const snapTurma = await getDocs(qTurma);
+                    if (snapTurma.empty) return alert("Código de Turma inválido.");
+                } else {
+                    if (!codigo) return alert("Código Institucional é obrigatório para este perfil.");
+                    const qConvite = query(collection(db, "usuarios"), where("codigoAcesso", "==", codigo), where("perfil", "==", perfil));
+                    const snapConvite = await getDocs(qConvite);
+                    
+                    if (snapConvite.empty) return alert("Código Institucional inválido para o perfil selecionado.");
+                    
+                    const docConvite = snapConvite.docs[0];
+                    if (docConvite.data().nome !== "") return alert("Este código já foi utilizado.");
+                    
+                    idDocumentoExistente = docConvite.id;
+                }
+
+               const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+                const novoUid = userCred.user.uid;
+
+                const dadosUsuario = {
+                    uid: novoUid,
+                    nome: nome.trim(),
+                    email: email.toLowerCase().trim(),
+                    perfil: perfil,
+                    status: 'pendente',
+                    dataCriacao: new Date(),
+                    codigoAcesso: codigo.trim(),
+                    turma: codigo.trim()
+                };
+
+                await setDoc(doc(db, "usuarios", novoUid), dadosUsuario);
+
+               if (perfil !== 'Aluno' && idDocumentoExistente) {
+                    const { deleteDoc, doc: docRef } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+                    await deleteDoc(docRef(db, "usuarios", idDocumentoExistente));
+                }
+
+                if (statusInicial === 'pendente') {
+                    alert("Conta criada! Aguarde a aprovação do professor para logar.");
+                    await signOut(auth);
+                    location.reload();
+                } else {
+                    alert("Conta criada com sucesso!");
+                    window.location.href = 'index.html';
+                }
+            } else {
+                await sendPasswordResetEmail(auth, email);
+                alert("E-mail enviado!");
+                modo = 'login';
+                atualizarUI();
+            }
+        } catch (e) {
+            alert("Erro: " + e.message);
+        }
+    };
+
+    atualizarUI();
+</script>
+</body>
+</html>
