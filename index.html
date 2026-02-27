@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Plata4Four - Sistema Educacional</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+  <style>
+    /* ESTILOS GERAIS */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { 
+        background-color: #f4f7f6; 
+        color: #1a202c; 
+        overflow-x: hidden; 
+        opacity: 0; 
+        transition: opacity 0.4s ease-in-out; 
+    }
+    .container { display: flex; min-height: 100vh; position: relative; }
+
+    /* MOBILE HEADER */
+    .mobile-header {
+      display: none;
+      width: 100%;
+      background: #003058;
+      color: white;
+      padding: 15px 20px;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      z-index: 1001;
+    }
+    .menu-toggle { font-size: 1.5rem; cursor: pointer; }
+
+    /* SIDEBAR */
+    .sidebar { 
+      width: 280px; 
+      background-color: #003058; 
+      color: #ffffff; 
+      padding: 30px 0; 
+      flex-shrink: 0; 
+      display: flex; 
+      flex-direction: column; 
+      transition: all 0.3s ease; 
+      z-index: 1000;
+    }
+    .logo-area { font-size: 1.2rem; font-weight: 800; text-align: center; padding-bottom: 20px; letter-spacing: 3px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px; }
+    .data-atual { font-size: 0.7rem; color: rgba(255,255,255,0.5); font-weight: 400; letter-spacing: 1px; margin-top: 5px; text-transform: none; }
+    
+    .menu { list-style: none; padding: 0 15px; flex: 1; overflow-y: auto; }
+    .menu-item { cursor: pointer; border-radius: 12px; margin-bottom: 4px; transition: 0.2s; }
+    .menu-item a { display: flex; align-items: center; padding: 12px 16px; color: rgba(255,255,255,0.65); text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+    .menu-item i { width: 28px; margin-right: 12px; font-size: 1.1rem; text-align: center; }
+    
+    .menu-item:hover { background: rgba(255,255,255,0.08); }
+    .menu-item.active { background-color: #004b87; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .menu-item.active a { color: #fff; }
+
+    .menu-item-no-hover:hover { background: transparent !important; cursor: default; }
+    .menu-item-no-hover a { cursor: pointer; }
+
+    /* ÁREA DE CONTEÚDO */
+    .content { flex: 1; padding: 40px; transition: all 0.3s ease; }
+    .card { background: #fff; padding: 30px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); margin-bottom: 20px; }
+    .header-prof h1 { color: #003058; font-size: 2.2rem; font-weight: 800; margin-bottom: 8px; }
+    .divisor { border: 0; height: 2px; background: linear-gradient(to right, #e0e0e0, transparent); margin: 25px 0 35px; }
+
+    .btn-padrao { border: none; padding: 14px 28px; border-radius: 12px; cursor: pointer; font-weight: 700; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .btn-sair { color: #ff7675 !important; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
+
+    /* Estilo Master Adicional */
+    body.is-master .sidebar { background-color: #003058; }
+    body.is-master .menu-item.active { background-color: #004b87; }
+
+    /* RESPONSIVIDADE */
+    @media (max-width: 768px) {
+      .mobile-header { display: flex; }
+      .sidebar { position: fixed; left: -280px; top: 0; height: 100vh; }
+      .sidebar.open { left: 0; }
+      .content { padding: 80px 20px 20px; }
+      .overlay.open { display: block; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999; }
+    }
+
+    body.is-professor .sidebar, body.is-master .sidebar { padding: 15px 0; }
+    body.is-professor .menu-item a, body.is-master .menu-item a { padding: 8px 16px; font-size: 0.82rem; }
+    body.is-professor .menu-item, body.is-master .menu-item { margin-bottom: 2px; }
+  </style>
+</head>
+<body>
+
+  <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+  <div class="mobile-header">
+    <div id="mobile-logo-text" class="logo-area" style="padding:0; border:0; margin:0; font-size:1rem;">Carregando...</div>
+    <div class="menu-toggle" onclick="toggleMenu()">
+      <i class="fa-solid fa-bars"></i>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="sidebar" id="sidebar">
+    <div class="logo-area" id="sidebar-logo-text">
+      PLATA4FOUR
+      <div id="data-atual-sidebar" class="data-atual"></div>
+    </div>
+    
+    <ul class="menu" id="main-menu"></ul>
+  </div>
+
+  <div class="content" id="main-content"></div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs, serverTimestamp, query, orderBy, deleteDoc, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDhbzne_klt9ba1B_I04JXykvpslX2aD0k",
+    authDomain: "plata4form.firebaseapp.com",
+    projectId: "plata4form",
+    storageBucket: "plata4form.firebasestorage.app",
+    messagingSenderId: "833502821958",
+    appId: "1:833502821958:web:2d8899b12ca4bd97b01447"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  window.db = getFirestore(app);
+  window.storage = getStorage(app);
+
+  emailjs.init("SUA_PUBLIC_KEY"); 
+
+  window.authMethods = { getAuth, onAuthStateChanged };
+  window.fsMethods = { collection, addDoc, getDocs, serverTimestamp, query, orderBy, doc, getDoc, setDoc, updateDoc, deleteDoc, where, onSnapshot };
+  window.storageMethods = { getStorage, ref, uploadBytes, getDownloadURL, deleteObject };
+
+  window.uploadFile = async (file, path) => {
+    if (!file) return null;
+    const storageRef = ref(window.storage, `${path}/${Date.now()}_${file.name}`);
+    const snapshot = await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(snapshot.ref);
+    return url;
+  };
+
+window.renderMenuMaster = () => {
+  document.body.classList.add('is-master');
+  document.getElementById('sidebar-logo-text').firstChild.textContent = 'MASTER ';
+  document.getElementById('mobile-logo-text').innerText = 'Painel Master';
+  const menu = document.getElementById('main-menu');
+  menu.innerHTML = `
+    <li class="menu-item"><a href="#" onclick="handleNav('homemaster')"><i class="fa-solid fa-house"></i> Página Inicial</a></li>
+    <li class="menu-item"><a href="#" onclick="handleNav('usuariosmaster')"><i class="fa-solid fa-users"></i> Usuários</a></li><li class="menu-item"><a href="#" onclick="handleNav('perfismaster')"><i class="fa-solid fa-id-card-clip"></i> Perfis</a></li><li class="menu-item btn-sair" style="margin-top: auto;"><a href="#" onclick="fazerLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sair</a></li>`;
+};
+
+window.renderMenuProfessor = () => {
+  document.body.classList.add('is-professor');
+  document.getElementById('sidebar-logo-text').firstChild.textContent = 'Professor ';
+  document.getElementById('mobile-logo-text').innerText = 'Painel Professor';
+  const menu = document.getElementById('main-menu');
+  menu.innerHTML = `
+    <li class="menu-item"><a href="#" onclick="handleNav('home')"><i class="fa-solid fa-house"></i> Página Inicial</a></li>
+    <li class="menu-item"><a href="#" onclick="handleNav('turmas')"><i class="fa-solid fa-users"></i> Turmas</a></li>
+    <li class="menu-item"><a href="#" onclick="handleNav('alunos')"><i class="fa-solid fa-graduation-cap"></i> Alunos</a></li>
+    
+    <li class="menu-item"><a href="#" onclick="handleNav('auditivaprofessorclm')"><i class="fa-solid fa-ear-listen"></i> Auditiva</a></li>
+    <li class="menu-item"><a href="#" onclick="handleNav('escritaprofessorclm')"><i class="fa-solid fa-pen-nib"></i> Escrita</a></li>
+    <li class="menu-item"><a href="#" onclick="handleNav('gramaticaprofessorclm')"><i class="fa-solid fa-book"></i> Gramática</a></li>
+    <li class="menu-item"><a href="#" onclick="handleNav('oralprofessorclm')"><i class="fa-solid fa-comment-dots"></i> Oral</a></li>
+
+   <li class="menu-item"><a href="#" onclick="handleNav('forumprofessorclm')"><i class="fa-solid fa-comments"></i> Fórum</a></li>
+    <li class="menu-item"><a href="#" onclick="handleNav('calendario')"><i class="fa-solid fa-calendar-days"></i> Calendário</a></li>
+    <li class="menu-item btn-sair" style="margin-top: auto;"><a href="#" onclick="fazerLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sair</a></li>
+  `;
+};
+
+window.renderMenuAluno = () => {
+  document.body.classList.remove('is-professor');
+  document.body.classList.remove('is-master');
+  document.getElementById('sidebar-logo-text').firstChild.textContent = 'Aluno ';
+  document.getElementById('mobile-logo-text').innerText = 'Portal Aluno';
+  const menu = document.getElementById('main-menu');
+  menu.innerHTML = `
+    <li class="menu-item"><a href="#" onclick="handleNav('homealunoclm')"><i class="fa-solid fa-house"></i> Página Inicial</a></li>
+    <li class="menu-item"><a href="#" onclick="handleNav('turmaclm')"><i class="fa-solid fa-users"></i> Turma</a></li>
+
+    <li class="menu-item"><a href="#" onclick="handleNav('auditivaalunoclm')"><i class="fa-solid fa-ear-listen"></i> Auditiva</a></li>
+    <li class="menu-item"><a href="#" onclick="handleNav('escritaalunoclm')"><i class="fa-solid fa-pen-nib"></i> Escrita</a></li>
+    <li class="menu-item"><a href="#" onclick="handleNav('gramaticaalunoclm')"><i class="fa-solid fa-book"></i> Gramática</a></li>
+    <li class="menu-item"><a href="#" onclick="handleNav('oralalunoclm')"><i class="fa-solid fa-comment-dots"></i> Oral</a></li>
+    <li class="menu-item"><a href="#" onclick="handleNav('feedbackdoalunoclm')"><i class="fa-solid fa-star"></i> Feedbacks</a></li>
+
+   <li class="menu-item"><a href="#" onclick="handleNav('forumalunoclm')"><i class="fa-solid fa-comments"></i> Fórum</a></li>
+    <li class="menu-item"><a href="#" onclick="handleNav('calendarioclm')"><i class="fa-solid fa-calendar-days"></i> Calendário</a></li>
+    <li class="menu-item btn-sair" style="margin-top: auto;"><a href="#" onclick="fazerLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sair</a></li>
+  `;
+};
+
+  window.fazerLogout = () => {
+    signOut(auth).then(() => { window.location.href = 'login.html'; });
+  };
+
+  const Router = {
+    routes: {},
+    register(id, renderFn) { this.routes[id] = renderFn; },
+    async load(pageId) {
+      const contentDiv = document.getElementById('main-content');
+
+      // Proteção de Rota Master: Impede que perfis comuns carreguem módulos Master
+      if (pageId.toLowerCase().includes('master') && window.usuarioLogado?.perfil !== 'Master') {
+          contentDiv.innerHTML = `<div class="card"><h2>Acesso Negado</h2><p>Você não tem permissão para acessar este módulo.</p></div>`;
+          return;
+      }
+
+      if (!this.routes[pageId]) {
+        try {
+          await import(`./modules/${pageId}.js`);
+        } catch (err) {
+          try {
+             await import(`./${pageId}.js`);
+          } catch(err2) {
+             console.error("Erro ao carregar módulo:", err2);
+             contentDiv.innerHTML = `<div class="card"><h2>Módulo ${pageId} em construção</h2></div>`;
+             return;
+          }
+        }
+      }
+      if (this.routes[pageId]) {
+        contentDiv.innerHTML = await this.routes[pageId]();
+      }
+      this.setActive(pageId);
+    },
+    setActive(id) {
+      document.querySelectorAll('.menu-item').forEach(item => {
+        const a = item.querySelector('a');
+        const link = a ? a.getAttribute('onclick') : '';
+        item.classList.toggle('active', link && link.includes(`'${id}'`));
+      });
+    }
+  };
+
+  window.Router = Router;
+  
+  window.handleNav = (id) => { 
+    window.location.hash = id;
+    Router.load(id); 
+    if(window.innerWidth <= 768) toggleMenu(); 
+  };
+
+  window.addEventListener('hashchange', () => {
+    const pageId = window.location.hash.replace('#', '');
+    if (pageId) Router.load(pageId);
+  });
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const userDoc = await getDoc(doc(window.db, "usuarios", user.uid));
+      if (userDoc.exists()) {
+        const dados = userDoc.data();
+
+        // Verificação de Status (Segurança de Aprovação)
+        if (dados.status !== 'aprovado' && dados.perfil !== 'Master') {
+            alert("Sua conta ainda não foi aprovada por um administrador.");
+            auth.signOut().then(() => {
+                window.location.replace('login.html');
+            });
+            return;
+        }
+
+        window.usuarioLogado = dados;
+
+        // Lógica de Direcionamento por Perfil
+        if (dados.perfil === "Master") {
+          renderMenuMaster();
+          handleNav(window.location.hash.replace('#', '') || 'homemaster');
+        } else if (dados.perfil === "Aluno") {
+          renderMenuAluno();
+          handleNav(window.location.hash.replace('#', '') || 'homealunoclm');
+        } else {
+          // Coordenador, Diretor e Professor usam o menu de professor por enquanto
+          renderMenuProfessor();
+          handleNav(window.location.hash.replace('#', '') || 'home');
+        }
+      } else {
+        // Logado no Auth, mas sem documento no Firestore
+        window.location.replace('login.html');
+      }
+    } else {
+      // Não está logado (Sessão inexistente)
+      window.location.replace('login.html');
+    }
+    // Remove o estado de carregamento inicial
+    document.body.style.opacity = "1";
+  });
+
+  const atualizarData = () => {
+    const agora = new Date();
+    const elemento = document.getElementById('data-atual-sidebar');
+    if(elemento) elemento.innerText = agora.toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'});
+  };
+
+  window.toggleMenu = () => {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('open');
+  };
+
+  window.addEventListener('DOMContentLoaded', atualizarData);
+</script>
+</body>
+</html>
