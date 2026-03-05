@@ -402,9 +402,11 @@ window.Router.register('turmas', async () => {
     document.getElementById('modalLimiteTurmas').style.display = 'none';
   };
 
-  window.mostrarSenhaTurma = (identificacao, senha) => {
-    document.getElementById('modalTitulo').innerText = identificacao;
-    document.getElementById('modalCodigo').innerText = senha;
+ window.mostrarSenhaTurma = (identificacao, senha) => {
+    const titulo = document.getElementById('modalTitulo');
+    const codigo = document.getElementById('modalCodigo');
+    if (titulo) titulo.innerText = identificacao;
+    if (codigo) codigo.innerText = senha;
     document.getElementById('modalSenha').style.display = 'flex';
   };
 
@@ -415,13 +417,31 @@ window.Router.register('turmas', async () => {
   window.copiarSenhaModal = () => {
     const senha = document.getElementById('modalCodigo').innerText;
     const btn = document.getElementById('btnCopiarModal');
+    
+    if (!senha) return;
+
     navigator.clipboard.writeText(senha).then(() => {
       const textoOriginal = btn.innerHTML;
       btn.innerHTML = '<i class="fa-solid fa-check"></i> Copiado!';
-      btn.style.background = "#004b87";
+      btn.style.backgroundColor = "#004b87";
       setTimeout(() => {
         btn.innerHTML = textoOriginal;
-        btn.style.background = "#003058";
+        btn.style.backgroundColor = "#003058";
+      }, 2000);
+    }).catch(err => {
+      console.error('Erro ao copiar: ', err);
+      // Fallback para navegadores que bloqueiam clipboard em contextos não seguros
+      const areaTexto = document.createElement("textarea");
+      areaTexto.value = senha;
+      document.body.appendChild(areaTexto);
+      areaTexto.select();
+      document.execCommand("copy");
+      document.body.removeChild(areaTexto);
+      
+      const textoOriginal = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> Copiado!';
+      setTimeout(() => {
+        btn.innerHTML = textoOriginal;
       }, 2000);
     });
   };
