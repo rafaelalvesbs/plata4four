@@ -581,23 +581,23 @@ textarea.addEventListener('input', function () {
 .linha-pautada{height:calc(835px - 35px); width:100%;}
 .scroll-content{width:100%; height:100%; padding-left:55px;}
 #texto-redacao{
-    font-family: 'Verdana', sans-serif !important;
-    font-size:18px; 
-    padding-right:15px; 
-    overflow:hidden; 
-    width: 100%;
-    /* Desativa menus contextuais e lupas de seleção no mobile */
-    -webkit-user-select: none; 
-    -webkit-touch-callout: none;
-    /* Força o estilo de escrita manual sem sugestões visuais */
-    text-decoration: none;
+    font-family: 'Times New Roman', Times, serif !important;
+    font-size:18px; 
+    padding-right:15px; 
+    overflow:hidden; 
+    width: 100%;
+    /* Desativa menus contextuais e lupas de seleção no mobile */
+    -webkit-user-select: none; 
+    -webkit-touch-callout: none;
+    /* Força o estilo de escrita manual sem sugestões visuais */
+    text-decoration: none;
 }
 .margem-numerica{display:block; height:100%; position:absolute;}
 .card-aluno-atv{flex-direction:row; align-items:center; flex-wrap: nowrap; gap: 15px;}
 .layout-proposta-flex{display:flex; flex-direction:row; align-items:center; gap:15px; margin-top:10px;}
 #container-img-apoio{display:block; width:80px; height:80px; flex-shrink:0;}
 #img-apoio-dinamica{width:80px; height:80px; object-fit:cover; border-radius:10px; border:1px solid #e2e8f0;}
-.btn-acao-card{width:100%; padding:14px;}
+.btn-acao-card{width:auto; padding:10px 15px;}
 .btn-enviar-final { width: calc(100% - 30px); margin: 20px 15px; padding: 25px; font-size: 18px; border-radius: 16px; }
 }
 
