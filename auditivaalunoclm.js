@@ -553,16 +553,21 @@ window.Router.register('auditivaalunoclm', async () => {
     @keyframes spinAud { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     /* --- MOBILE --- */
-    @media (max-width: 768px) {
-        .container-questao-corpo.layout-com-foto { flex-direction: column-reverse; }
-        .col-foto-questao { width: 100%; }
-        .img-questao-render { max-height: 180px; }
-        
-        /* Gap entre as setas e o botão enviar no mobile */
-        .container-navegacao-setas {
-            margin-bottom: 16px;
-        }
-    }
+    @media (max-width: 768px) {
+        .container-questao-corpo.layout-com-foto { flex-direction: column-reverse; }
+        .col-foto-questao { width: 100%; }
+        .img-questao-render { max-height: 180px; }
+        
+        /* Gap entre as setas e o botão enviar no mobile */
+        .container-navegacao-setas {
+            margin-bottom: 16px;
+        }
+
+        #area-botao-finalizar {
+            margin-top: 30px;
+            padding-bottom: 20px;
+        }
+    }
 .header-fixo-aud { transition: all 0.3s ease; }
     .btn-voltar-topo { background: none; border: none; color: #fff; cursor: pointer; font-size: 18px; }
     
