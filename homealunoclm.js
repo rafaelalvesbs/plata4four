@@ -38,9 +38,9 @@ window.Router.register('homealunoclm', async () => {
             const nomeExibicao = nomes.slice(0, 2).join(" ");
             
             const elBoasVindas = document.getElementById('boas-vindas-aluno');
-            if (elBoasVindas) {
-                elBoasVindas.innerText = `Olá, ${nomeExibicao}!`;
-            }
+            if (elBoasVindas) {
+                elBoasVindas.innerHTML = `OLÁ,<br>${nomeExibicao}!`;
+            }
 
             const verificarAlertaPersistent = (cardId, totalAtual) => {
                 const storageKey = `visto_${cardId}_${user.uid}`;
@@ -354,9 +354,9 @@ window.Router.register('homealunoclm', async () => {
         </style>
 
         <div class="header-prof">
-            <h1 id="boas-vindas-aluno" style="text-transform: uppercase; font-weight: 800; color: ${azulPadrao}; margin:0;">CARREGANDO...</h1>
-            <p id="subtitulo-aluno" style="color: #64748b; font-weight: 500; font-size: 1.1rem; margin: 5px 0;">Bons estudos hoje!</p>
-        </div>
+            <h1 id="boas-vindas-aluno" style="text-transform: uppercase; font-weight: 800; color: ${azulPadrao}; margin:0; line-height: 1.1;">CARREGANDO...</h1>
+            <p id="subtitulo-aluno" style="color: #64748b; font-weight: 500; font-size: 1.1rem; margin: 5px 0;">Bons estudos hoje!</p>
+        </div>
 
         <hr style="border:0; border-top:2px solid #f1f5f9; margin: 20px 0 30px 0;">
 
