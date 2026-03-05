@@ -135,7 +135,11 @@ window.Router.register('escritaalunoclm', async () => {
                 card.style.marginBottom = "10px";
                 card.innerHTML = `
                     <div style="min-width: 0; flex: 1;">
-                        <strong style="color: #003058; display: block; font-size: 14px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${data.titulo || "Sem Título"}</strong>
+                        <strong style="color: #003058; display: block; font-size: 14px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+    ${window.innerWidth < 600 && (data.titulo && data.titulo.length > 22) 
+        ? data.titulo.substring(0, 22) + '...' 
+        : (data.titulo || "Sem Título")}
+</strong>
                         <p style="font-size: 11px; color: ${prazoVencido ? '#dc2626' : '#64748b'}; margin-top: 4px; margin-bottom: 0;">
                             <i class="fa-regular fa-calendar"></i> Prazo: ${prazoF} ${prazoVencido ? '<strong>(VENCIDO)</strong>' : ''}
                         </p>
